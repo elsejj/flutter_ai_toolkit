@@ -48,45 +48,46 @@ class UserMessageView extends StatelessWidget {
                 ),
               ),
           ],
-          ChatViewModelClient(
-            builder: (context, viewModel, child) {
-              final text = message.text!;
-              final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
-              final userStyle = UserMessageStyle.resolve(
-                chatStyle.userMessageStyle,
-              );
+          if (message.text != null && message.text!.trim().isNotEmpty)
+            ChatViewModelClient(
+              builder: (context, viewModel, child) {
+                final text = message.text!;
+                final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
+                final userStyle = UserMessageStyle.resolve(
+                  chatStyle.userMessageStyle,
+                );
 
-              return Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: HoveringButtons(
-                    isUserMessage: true,
-                    chatStyle: chatStyle,
-                    clipboardText: text,
-                    onEdit: onEdit,
-                    child: DecoratedBox(
-                      decoration: userStyle.decoration!,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 12,
-                          bottom: 12,
-                        ),
-                        child: AdaptiveCopyText(
-                          chatStyle: chatStyle,
-                          clipboardText: text,
-                          onEdit: onEdit,
-                          child: Text(text, style: userStyle.textStyle),
+                return Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: HoveringButtons(
+                      isUserMessage: true,
+                      chatStyle: chatStyle,
+                      clipboardText: text,
+                      onEdit: onEdit,
+                      child: DecoratedBox(
+                        decoration: userStyle.decoration!,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            top: 12,
+                            bottom: 12,
+                          ),
+                          child: AdaptiveCopyText(
+                            chatStyle: chatStyle,
+                            clipboardText: text,
+                            onEdit: onEdit,
+                            child: Text(text, style: userStyle.textStyle),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
         ],
       );
 }

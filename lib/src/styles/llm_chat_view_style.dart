@@ -30,6 +30,7 @@ class LlmChatViewStyle {
     this.closeButtonStyle,
     this.cancelButtonStyle,
     this.copyButtonStyle,
+    this.pasteButtonStyle,
     this.editButtonStyle,
     this.galleryButtonStyle,
     this.recordButtonStyle,
@@ -94,6 +95,10 @@ class LlmChatViewStyle {
         style?.copyButtonStyle,
         defaultStyle: ActionButtonStyle.defaultStyle(ActionButtonType.copy),
       ),
+      pasteButtonStyle: ActionButtonStyle.resolve(
+        style?.pasteButtonStyle,
+        defaultStyle: ActionButtonStyle.defaultStyle(ActionButtonType.paste),
+      ),
       editButtonStyle: ActionButtonStyle.resolve(
         style?.editButtonStyle,
         defaultStyle: ActionButtonStyle.defaultStyle(ActionButtonType.edit),
@@ -121,7 +126,7 @@ class LlmChatViewStyle {
         style?.suggestionStyle,
         defaultStyle: defaultStyle.suggestionStyle,
       ),
-      llmMessageWidthPercent: 0.8,
+      llmMessageWidthPercent: style?.llmMessageWidthPercent ?? 0.8,
     );
   }
 
@@ -154,6 +159,8 @@ class LlmChatViewStyle {
         cancelButtonStyle:
             ActionButtonStyle.defaultStyle(ActionButtonType.cancel),
         copyButtonStyle: ActionButtonStyle.defaultStyle(ActionButtonType.copy),
+        pasteButtonStyle:
+            ActionButtonStyle.defaultStyle(ActionButtonType.paste),
         editButtonStyle: ActionButtonStyle.defaultStyle(ActionButtonType.edit),
         actionButtonBarDecoration: BoxDecoration(
           color: ToolkitColors.darkButtonBackground,
@@ -199,6 +206,9 @@ class LlmChatViewStyle {
 
   /// Style for the copy button.
   final ActionButtonStyle? copyButtonStyle;
+
+  /// Style for the copy button.
+  final ActionButtonStyle? pasteButtonStyle;
 
   /// Style for the edit button.
   final ActionButtonStyle? editButtonStyle;

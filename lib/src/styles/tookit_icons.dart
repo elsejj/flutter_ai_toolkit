@@ -67,4 +67,7 @@ class ToolkitIcons {
   /// Icon for copying content.
   static const IconData content_copy =
       IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+
+  /// Icon for pasting content.
+  static const IconData paste = IconData(0xef82, fontFamily: 'MaterialIcons');
 }

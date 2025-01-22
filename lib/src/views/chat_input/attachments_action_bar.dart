@@ -3,10 +3,12 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:super_clipboard/super_clipboard.dart';
 
 import '../../chat_view_model/chat_view_model_client.dart';
 import '../../dialogs/adaptive_snack_bar/adaptive_snack_bar.dart';
@@ -23,12 +25,18 @@ class AttachmentActionBar extends StatefulWidget {
   ///
   /// The [onAttachments] parameter is required and is called when attachments
   /// are selected.
-  const AttachmentActionBar({required this.onAttachments, super.key});
+  const AttachmentActionBar(
+      {required this.onAttachments, required this.onText, super.key});
 
   /// Callback function that is called when attachments are selected.
   ///
   /// The selected [Attachment]s are passed as an argument to this function.
   final Function(Iterable<Attachment> attachments) onAttachments;
+
+  /// Callback function that is called when text is entered.
+  ///
+  /// The entered text (from Clipboard/TXT file) is passed as an argument to this function.
+  final Function(String text) onText;
 
   @override
   State<AttachmentActionBar> createState() => _AttachmentActionBarState();
@@ -68,10 +76,16 @@ class _AttachmentActionBarState extends State<AttachmentActionBar> {
                     style: chatStyle.attachFileButtonStyle!,
                   ),
                 ])
-              : ActionButton(
-                  onPressed: _onToggleMenu,
-                  style: chatStyle.addButtonStyle!,
-                );
+              : Column(spacing: 4, children: [
+                  ActionButton(
+                    onPressed: _onToggleMenu,
+                    style: chatStyle.addButtonStyle!,
+                  ),
+                  ActionButton(
+                    onPressed: _onClipboard,
+                    style: chatStyle.pasteButtonStyle!,
+                  ),
+                ]);
         },
       );
 
@@ -122,6 +136,40 @@ class _AttachmentActionBarState extends State<AttachmentActionBar> {
         // ignore: use_build_context_synchronously
         AdaptiveSnackBar.show(context, 'Unable to pick a file: $ex');
       }
+    }
+  }
+
+  Future<void> _onClipboard() async {
+    final clipboard = SystemClipboard.instance;
+    if (clipboard == null) {
+      AdaptiveSnackBar.show(context, 'Clipboard is not available');
+      return;
+    }
+    final reader = await clipboard.read();
+    if (reader.canProvide(Formats.plainText)) {
+      final text = await reader.readValue(Formats.plainText);
+      if (text != null) {
+        widget.onText(text);
+      }
+      return;
+    }
+    if (reader.canProvide(Formats.plainTextFile)) {
+      reader.getFile(Formats.plainTextFile, (file) async {
+        final text = await file.readAll();
+        widget.onText(utf8.decode(text));
+      });
+      return;
+    }
+
+    if (reader.canProvide(Formats.png)) {
+      reader.getFile(Formats.png, (file) async {
+        final body = await file.readAll();
+        widget.onAttachments([
+          ImageFileAttachment(
+              name: 'Clipboard Image', mimeType: 'image/png', bytes: body)
+        ]);
+      });
+      return;
     }
   }
 }

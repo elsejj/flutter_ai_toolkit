@@ -23,7 +23,7 @@ class ActionButton extends StatelessWidget {
     required this.onPressed,
     required this.style,
     super.key,
-    this.size = 40,
+    this.size = 30,
   });
 
   /// The callback that is called when the button is tapped.

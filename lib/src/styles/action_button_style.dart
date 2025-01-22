@@ -117,6 +117,9 @@ class ActionButtonStyle {
         color = ToolkitColors.whiteIcon;
         bgColor = ToolkitColors.greyBackground;
         tooltip = 'Close Menu';
+      case ActionButtonType.paste:
+        icon = ToolkitIcons.paste;
+        tooltip = 'Paste';
     }
 
     return ActionButtonStyle(

@@ -81,21 +81,21 @@ class LlmMessageView extends StatelessWidget {
                                     color: chatStyle.progressIndicatorColor!,
                                   ),
                                 )
-                              : AdaptiveCopyText(
-                                  clipboardText: text,
-                                  chatStyle: chatStyle,
-                                  child: isWelcomeMessage ||
-                                          viewModel.responseBuilder == null
-                                      ? MarkdownBody(
-                                          data: text,
-                                          selectable: false,
-                                          styleSheet: llmStyle.markdownStyle,
-                                        )
-                                      : viewModel.responseBuilder!(
-                                          context,
-                                          text,
-                                        ),
-                                ),
+                              : //AdaptiveCopyText(
+                              //  clipboardText: text,
+                              //  chatStyle: chatStyle,
+                              //  child:
+                              (isWelcomeMessage ||
+                                      viewModel.responseBuilder == null)
+                                  ? MarkdownBody(
+                                      data: text,
+                                      selectable: true,
+                                      styleSheet: llmStyle.markdownStyle,
+                                    )
+                                  : viewModel.responseBuilder!(
+                                      context,
+                                      text,
+                                    ),
                         ),
                       ),
                     ],

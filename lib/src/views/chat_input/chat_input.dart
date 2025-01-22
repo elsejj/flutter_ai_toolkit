@@ -157,9 +157,10 @@ class _ChatInputState extends State<ChatInput> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 14),
+                          padding: const EdgeInsets.only(bottom: 2, top: 2),
                           child: AttachmentActionBar(
                             onAttachments: onAttachments,
+                            onText: (text) => _textController.text = text,
                           ),
                         ),
                         Expanded(
@@ -249,10 +250,10 @@ class _ChatInputState extends State<ChatInput> {
       );
 
   InputState get _inputState {
-    if (_waveController.isRecording) return InputState.isRecording;
-    if (widget.onCancelMessage != null) return InputState.canCancelPrompt;
-    if (widget.onCancelStt != null) return InputState.canCancelStt;
-    if (_textController.text.trim().isEmpty) return InputState.canStt;
+    // if (_waveController.isRecording) return InputState.isRecording;
+    // if (widget.onCancelMessage != null) return InputState.canCancelPrompt;
+    // if (widget.onCancelStt != null) return InputState.canCancelStt;
+    //if (_textController.text.trim().isEmpty) return InputState.canStt;
     return InputState.canSubmitPrompt;
   }
 
@@ -261,7 +262,7 @@ class _ChatInputState extends State<ChatInput> {
 
     // the mobile vkb can still cause a submission even if there is no text
     final text = _textController.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty && _attachments.isEmpty) return;
 
     widget.onSendMessage(text, List.from(_attachments));
     _attachments.clear();
