@@ -38,6 +38,7 @@ class LlmChatViewStyle {
     this.actionButtonBarDecoration,
     this.fileAttachmentStyle,
     this.suggestionStyle,
+    this.llmMessageWidthPercent = 0.8,
   });
 
   /// Resolves the provided [style] with the [defaultStyle].
@@ -120,6 +121,7 @@ class LlmChatViewStyle {
         style?.suggestionStyle,
         defaultStyle: defaultStyle.suggestionStyle,
       ),
+      llmMessageWidthPercent: 0.8,
     );
   }
 
@@ -159,6 +161,7 @@ class LlmChatViewStyle {
         ),
         fileAttachmentStyle: FileAttachmentStyle.defaultStyle(),
         suggestionStyle: SuggestionStyle.defaultStyle(),
+        llmMessageWidthPercent: 0.8,
       );
 
   /// Background color of the entire chat widget.
@@ -220,4 +223,7 @@ class LlmChatViewStyle {
 
   /// Style for suggestions.
   final SuggestionStyle? suggestionStyle;
+
+  /// Width percent of the llm message view.
+  final double llmMessageWidthPercent;
 }
