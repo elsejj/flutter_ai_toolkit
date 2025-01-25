@@ -4,6 +4,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_latex/flutter_markdown_latex.dart';
 
 import '../../chat_view_model/chat_view_model_client.dart';
 import '../../chat_view_model/chat_view_model_provider.dart';
@@ -11,8 +12,8 @@ import '../../providers/interface/chat_message.dart';
 import '../../styles/llm_chat_view_style.dart';
 import '../../styles/llm_message_style.dart';
 import '../jumping_dots_progress_indicator/jumping_dots_progress_indicator.dart';
-import 'adaptive_copy_text.dart';
 import 'hovering_buttons.dart';
+import 'package:markdown/markdown.dart' as md;
 
 /// A widget that displays an LLM (Language Model) message in a chat interface.
 @immutable
@@ -91,6 +92,13 @@ class LlmMessageView extends StatelessWidget {
                                       data: text,
                                       selectable: true,
                                       styleSheet: llmStyle.markdownStyle,
+                                      builders: {
+                                        'latex': LatexElementBuilder(),
+                                      },
+                                      extensionSet: md.ExtensionSet(
+                                        [LatexBlockSyntax()],
+                                        [LatexInlineSyntax()],
+                                      ),
                                     )
                                   : viewModel.responseBuilder!(
                                       context,
