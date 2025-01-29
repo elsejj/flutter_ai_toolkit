@@ -30,6 +30,9 @@ dependencies:
   image_picker: ^1.1.2
   markdown: ^7.3.0
   mime: ^2.0.0
+  receive_sharing_intent:
+    git:
+      url:  https://github.com/KasemJaffer/receive_sharing_intent
   super_clipboard: ^0.8.24
   universal_platform: ^1.1.0
   uuid: ^4.4.2

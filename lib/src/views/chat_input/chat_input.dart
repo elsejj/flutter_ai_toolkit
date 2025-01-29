@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:waveform_recorder/waveform_recorder.dart';
 
 import '../../chat_view_model/chat_view_model_client.dart';
@@ -125,10 +128,61 @@ class _ChatInputState extends State<ChatInput> {
 
   @override
   void dispose() {
+    _intentSub.cancel();
     _textController.dispose();
     _waveController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  late StreamSubscription _intentSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _intentSub = ReceiveSharingIntent.instance.getMediaStream().listen((value) {
+      for (var media in value) {
+        switch (media.type) {
+          case SharedMediaType.image:
+            ImageFileAttachment.fromFile(XFile(media.path)).then((attachment) {
+              setState(() {
+                _attachments.add(attachment);
+              });
+            });
+            break;
+          case SharedMediaType.text:
+            setState(() {
+              _textController.text = media.path;
+            });
+            break;
+          default:
+            break;
+        }
+      }
+    }, onError: (err) {});
+
+    ReceiveSharingIntent.instance.getInitialMedia().then((value) {
+      for (var media in value) {
+        switch (media.type) {
+          case SharedMediaType.image:
+            ImageFileAttachment.fromFile(XFile(media.path)).then((attachment) {
+              setState(() {
+                _attachments.add(attachment);
+              });
+            });
+            break;
+          case SharedMediaType.text:
+            setState(() {
+              _textController.text = media.path;
+            });
+            break;
+          default:
+            break;
+        }
+      }
+      ReceiveSharingIntent.instance.reset();
+    });
   }
 
   @override
