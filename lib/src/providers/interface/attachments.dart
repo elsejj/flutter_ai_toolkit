@@ -4,6 +4,7 @@
 
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:mime/mime.dart';
 
 /// An abstract class representing an attachment in a chat message.
@@ -143,11 +144,20 @@ final class ImageFileAttachment extends FileAttachment {
     if (!Attachment._isImage(mimeType)) {
       throw Exception('Not an image: $mimeType');
     }
+    // scale the image to a reasonable size and quality, and convert it to JPEG
+    // 1536 is a good size for most chat applications
+    const maxWidth = 1536;
+    const maxHeight = 1536;
+    final scaledImage = await FlutterImageCompress.compressWithList(
+      await file.readAsBytes(),
+      minWidth: maxWidth,
+      minHeight: maxHeight,
+    );
 
     return ImageFileAttachment(
-      name: file.name,
-      mimeType: mimeType,
-      bytes: await file.readAsBytes(),
+      name: '${file.name}.jpg',
+      mimeType: 'image/jpeg',
+      bytes: scaledImage,
     );
   }
 }
