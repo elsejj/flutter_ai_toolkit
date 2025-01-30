@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
@@ -141,48 +142,53 @@ class _ChatInputState extends State<ChatInput> {
   void initState() {
     super.initState();
 
-    _intentSub = ReceiveSharingIntent.instance.getMediaStream().listen((value) {
-      for (var media in value) {
-        switch (media.type) {
-          case SharedMediaType.image:
-            ImageFileAttachment.fromFile(XFile(media.path)).then((attachment) {
-              setState(() {
-                _attachments.add(attachment);
+    if (Platform.isAndroid || Platform.isIOS) {
+      _intentSub =
+          ReceiveSharingIntent.instance.getMediaStream().listen((value) {
+        for (var media in value) {
+          switch (media.type) {
+            case SharedMediaType.image:
+              ImageFileAttachment.fromFile(XFile(media.path))
+                  .then((attachment) {
+                setState(() {
+                  _attachments.add(attachment);
+                });
               });
-            });
-            break;
-          case SharedMediaType.text:
-            setState(() {
-              _textController.text = media.path;
-            });
-            break;
-          default:
-            break;
+              break;
+            case SharedMediaType.text:
+              setState(() {
+                _textController.text = media.path;
+              });
+              break;
+            default:
+              break;
+          }
         }
-      }
-    }, onError: (err) {});
+      }, onError: (err) {});
 
-    ReceiveSharingIntent.instance.getInitialMedia().then((value) {
-      for (var media in value) {
-        switch (media.type) {
-          case SharedMediaType.image:
-            ImageFileAttachment.fromFile(XFile(media.path)).then((attachment) {
-              setState(() {
-                _attachments.add(attachment);
+      ReceiveSharingIntent.instance.getInitialMedia().then((value) {
+        for (var media in value) {
+          switch (media.type) {
+            case SharedMediaType.image:
+              ImageFileAttachment.fromFile(XFile(media.path))
+                  .then((attachment) {
+                setState(() {
+                  _attachments.add(attachment);
+                });
               });
-            });
-            break;
-          case SharedMediaType.text:
-            setState(() {
-              _textController.text = media.path;
-            });
-            break;
-          default:
-            break;
+              break;
+            case SharedMediaType.text:
+              setState(() {
+                _textController.text = media.path;
+              });
+              break;
+            default:
+              break;
+          }
         }
-      }
-      ReceiveSharingIntent.instance.reset();
-    });
+        ReceiveSharingIntent.instance.reset();
+      });
+    }
   }
 
   @override

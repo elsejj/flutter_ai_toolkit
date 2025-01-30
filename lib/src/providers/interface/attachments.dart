@@ -4,7 +4,7 @@
 
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'image_resize.dart';
 import 'package:mime/mime.dart';
 
 /// An abstract class representing an attachment in a chat message.
@@ -21,11 +21,9 @@ sealed class Attachment {
   /// The name of the attachment.
   final String name;
 
-  static String _mimeType(XFile file) =>
-      file.mimeType ?? lookupMimeType(file.name) ?? 'application/octet-stream';
+  static String _mimeType(XFile file) => file.mimeType ?? lookupMimeType(file.name) ?? 'application/octet-stream';
 
-  static bool _isImage(String mimeType) =>
-      mimeType.toLowerCase().startsWith('image/');
+  static bool _isImage(String mimeType) => mimeType.toLowerCase().startsWith('image/');
 }
 
 /// Represents a file attachment in a chat message.
@@ -96,8 +94,7 @@ final class FileAttachment extends Attachment {
   /// [file] is the XFile object representing the file to be attached.
   ///
   /// Returns a Future that completes with a [FileAttachment] instance.
-  static Future<FileAttachment> fromFile(XFile file) async =>
-      FileAttachment.fileOrImage(
+  static Future<FileAttachment> fromFile(XFile file) async => FileAttachment.fileOrImage(
         name: file.name,
         mimeType: Attachment._mimeType(file),
         bytes: await file.readAsBytes(),
@@ -148,11 +145,7 @@ final class ImageFileAttachment extends FileAttachment {
     // 1536 is a good size for most chat applications
     const maxWidth = 1536;
     const maxHeight = 1536;
-    final scaledImage = await FlutterImageCompress.compressWithList(
-      await file.readAsBytes(),
-      minWidth: maxWidth,
-      minHeight: maxHeight,
-    );
+    final scaledImage = await resizeImage(file.path, maxWidth, maxHeight);
 
     return ImageFileAttachment(
       name: '${file.name}.jpg',
